@@ -1,25 +1,69 @@
 class CalcController {
-    constructor(){
-        this._displayCalc = "0"
+    constructor() {
+        this._locale = 'pt-BR'
+
+        this._dateEl = document.querySelector('[data-day]')
+        this._timeEl = document.querySelector('[data-hour]')
+        this._displayCalcEl = document.querySelector('[data-display]')
+
         this._currentDate;
+        this.initialize()
     }
 
-  
-    
-
-    get displayCalc () {
-        return this._displayCalc
+    /*
+      initialize
+      Inicializa a exibição da data e hora atualizável na calculadora e atualiza a cada segundo.
+      @returns {void}
+    */
+    initialize() {
+        this.setDisplayDateTime();
+        setInterval(() => {
+            this.setDisplayDateTime();
+        }, 1000);
     }
 
-    set displayCalc (value) {
-        this._displayCalc = value
+    /*
+      setDisplayDateTime
+      Define a data e a hora atual para exibição na calculadora.
+     
+      @returns {void}
+    */
+    setDisplayDateTime() {
+        this.displayDate =
+            this.currentDate.toLocaleDateString(this._locale);
+        this.displayTime =
+            this.currentDate.toLocaleTimeString(this._locale);
+    }
+
+    get displayTime() {
+        return this._timeEl.innerHTML = time
+    }
+
+    set displayTime(time) {
+        this._timeEl.innerHTML = time
+    }
+
+    get displayDate() {
+        return this._dateEl.innerHTML
+    }
+
+    set displayDate(date) {
+        return this._dateEl.innerHTML = date
+    }
+
+    get displayCalc() {
+        return this._displayCalcEl.innerHTML
+    }
+
+    set displayCalc(value) {
+        this._displayCalcEl.innerHTML = value
     }
 
     get currentDate() {
-        return this._currentDate;
+        return new Date()
     }
 
-    set currentDate (date) {
+    set currentDate(date) {
         this._currentDate = date
     }
 }
