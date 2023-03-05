@@ -24,6 +24,7 @@ class CalcController {
         setInterval(() => {
             this.setDisplayDateTime();
         }, 1000);
+        this.setLastNumberToDisplay()
     }
 
     /*
@@ -61,13 +62,15 @@ class CalcController {
         });
     }
     /*
-      Limpa todas as operações da memória.
-     
-      @function
-      @name clearAll
+    Remove todas as operações armazenadas na memória da calculadora e atualiza a exibição do visor para 0.
+ 
+    @function
+    @name clearAll
+    @returns {void}
     */
     clearAll() {
         this._operation = [];
+        this.setLastNumberToDisplay();
     }
 
     /*
@@ -78,11 +81,12 @@ class CalcController {
     */
     clearEntry() {
         this._operation.pop();
+        this.setLastNumberToDisplay();
     }
 
     /*
         Define a exibição para mostrar "Erro".
-
+    
         @function
         @name setError
     */
@@ -118,16 +122,24 @@ class CalcController {
 
     /*
         Calcula o resultado da operação atual e atualiza o array de operações com o resultado e o último valor.
+     
         @function
         @name calc
         @returns {void}
-   */
+    */
     calc() {
         const last = this._operation.pop();
-        const result = eval(this._operation.join(""));
+        let result;
+        if (last == '%') {
+            result = eval(this._operation.join("")) / 100;
+        } else {
+            const expression = this._operation.join("");
+            result = eval(expression);
+        }
         this._operation = [result, last];
         this.setLastNumberToDisplay();
     }
+
 
     /*
      
@@ -167,13 +179,20 @@ class CalcController {
         @function
         @name setLastNumberToDisplay
         @returns {void}
-    */
-
+  */
     setLastNumberToDisplay() {
-        let lastNumber = this._operation.slice().reverse().find(number => !this.isOperator(number));
+        let lastNumber = this._operation
+            .slice()
+            .reverse()
+            .find((number) => !this.isOperator(number));
+
+        if (lastNumber === undefined) {
+            lastNumber = 0;
+        }
 
         this.displayCalc = lastNumber;
     }
+
 
 
 
@@ -183,12 +202,12 @@ class CalcController {
     Se o valor for um operador, troca o último operador pelo novo valor.
     Se o valor não for um operador, adiciona-o à operação como uma nova string.
     Se a última operação for um número, adiciona o valor atual a ele.
-   
+     
     @function
     @name addOperation
     @param {number|string} value - O valor a ser adicionado à operação atual.
     @returns {void}
-   */
+    */
     addOperation(value) {
         const lastOperation = this.getLastOperation();
 
