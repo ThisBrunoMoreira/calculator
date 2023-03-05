@@ -1,7 +1,8 @@
 class CalcController {
     constructor() {
         this._locale = 'pt-BR';
-
+        this._lastOperator = ''
+        this._lastNumber = ''
         this._dateEl = document.querySelector('[data-day]');
         this._timeEl = document.querySelector('[data-hour]');
         this._displayCalcEl = document.querySelector('[data-display]');
@@ -120,41 +121,59 @@ class CalcController {
 
 
 
- /*
-    Calcula o resultado da operação atual e atualiza o array de operações com o resultado e o último valor.
-     
-    @function
-    @name calc
-    @returns {void}
-*/
-calc() {
 
-    let last = '';
-    let result;
-
-    // Remove o último valor do array de operações, caso haja mais de três elementos.
-    if (this._operation.length > 3) {
-        last = this._operation.pop();
-    }
-
-    // Calcula o resultado da expressão contida no array de operações.
-    if (last === '%') {
-        result = eval(this._operation.join('')) / 100;
-    } else {
-        const expression = this._operation.join('');
-        result = eval(expression);
-    }
+    /*
     
-    // Adiciona o último valor de volta ao array de operações.
-    if (last) {
-        this._operation.push(last);
+    Calcula o resultado da operação contida no array de operações usando a função eval().
+    @returns {number} O resultado da operação.
+    */
+    getResult() {
+        return eval(this._operation.join(""));
     }
 
-    // Atualiza o array de operações com o resultado e limpa a tela da calculadora.
-    this._operation = [result];
-    this.setLastNumberToDisplay();
-}
 
+    /*
+        Calcula o resultado da operação atual e atualiza o array de operações com o resultado e o último valor.
+        @function
+        @name calc
+        @returns {void}
+    */
+    calc() {
+        let last = '';
+        this._lastOperator = this.getLastItem();
+
+        // Se a operação atual tiver menos de 3 itens, adiciona o último valor à operação.
+        if (this._operation.length < 3) {
+            let firstItem = this._operation[0];
+            this._operation = [firstItem, this._lastOperator, this._lastNumber];
+        }
+
+        // Se a operação atual tiver mais de 3 itens, remove o último item e calcula o resultado.
+        if (this._operation.length > 3) {
+            last = this._operation.pop();
+            this._lastNumber = this.getResult();
+        } else if (this._operation.length == 3) {
+            this._lastNumber = this.getLastItem(false);
+        }
+
+        console.log('_lastOpertaro', this._lastOperator)
+        console.log('lastNumber', this._lastNumber)
+
+        let result = this.getResult();
+
+        // Se o último item for um operador de porcentagem, divide o resultado por 100.
+        if (last == '%') {
+            result /= 100;
+            this._operation = [result];
+        } else {
+            // Adiciona o último item de volta à operação.
+            this._operation = [result];
+            if (last) this._operation.push(last);
+        }
+
+        // Atualiza a tela da calculadora com o último número digitado.
+        this.setLastNumberToDisplay();
+    }
 
     /*
      
@@ -187,21 +206,42 @@ calc() {
     }
 
     /*
+   Retorna o último item adicionado ao array de operações que corresponde ao critério especificado.
+  
+   @function
+   @name getLastItem
+   @param {boolean} [isOperator=true] - Indica se o último item deve ser um operador.
+   @returns {(number|string|undefined)} - O último item que corresponde ao critério especificado ou undefined se não houver nenhum item correspondente.
+  */
+    getLastItem(isOperator = true) {
+        const lastItemIndex = this._operation
+            .slice()
+            .reverse()
+            .findIndex((item) => this.isOperator(item) === isOperator);
+
+        if (lastItemIndex === -1) {
+            return isOperator ? this._lastOperator : this._lastNumber;
+        }
+
+        return this._operation[this._operation.length - 1 - lastItemIndex];
+    }
+
+
+
+    /*
         Define o último número digitado ou calculado para ser exibido na tela.
         Percorre a lista de operações da calculadora de trás para frente até encontrar o último número.
         O número encontrado é atribuído à variável lastNumber e, em seguida, é exibido na tela da calculadora.
-
+    
         @function
         @name setLastNumberToDisplay
         @returns {void}
-  */
+    */
     setLastNumberToDisplay() {
-        let lastNumber = this._operation
-            .slice()
-            .reverse()
-            .find((number) => !this.isOperator(number));
+        let lastNumber = this.getLastItem(false)
 
-        if (lastNumber === undefined) {
+
+        if (!lastNumber) {
             lastNumber = 0;
         }
 
@@ -255,11 +295,11 @@ calc() {
         Se o valor for um dos operadores (+, -, *, /, %), chama addOperation com o operador como argumento.
         Se o valor for um ponto '.', chama addOperation com o ponto como argumento.
         Para todos os outros casos, chama o método setError.
-    
+     
         @function
         @name execBtn
         @param {string} value - Valor do botão clicado ou arrastado pelo usuário.
-   */
+    */
     execBtn(value) {
         switch (value) {
             case 'c':
