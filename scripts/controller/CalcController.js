@@ -1,12 +1,12 @@
 class CalcController {
     constructor() {
-        this._locale = 'pt-BR'
+        this._locale = 'pt-BR';
 
-        this._dateEl = document.querySelector('[data-day]')
-        this._timeEl = document.querySelector('[data-hour]')
-        this._displayCalcEl = document.querySelector('[data-display]')
-        this._buttons = document.querySelectorAll('[data-btn]')
-
+        this._dateEl = document.querySelector('[data-day]');
+        this._timeEl = document.querySelector('[data-hour]');
+        this._displayCalcEl = document.querySelector('[data-display]');
+        this._buttons = document.querySelectorAll('[data-btn]');
+        this._operation = []
         this._currentDate;
         this.initialize();
         this.initButtonsEvents();
@@ -57,60 +57,153 @@ class CalcController {
     */
     addEventListenerAll(element, events, fn) {
         events.split(' ').forEach(event => {
-            element.addEventListener(event, fn)
-        })
+            element.addEventListener(event, fn);
+        });
     }
     /*
-        Inicializa os ouvintes de eventos de clique e arrasto para os botões da calculadora.
-        Este método inicializa os ouvintes de eventos de clique e arrasto para todos os botões com o atributo 'data-btn'.
+      Limpa todas as operações da memória.
+     
+      @function
+      @name clearAll
+    */
+    clearAll() {
+        this._operation = [];
+    }
+
+    /*
+        Remove a última entrada da memória.
+        
+        @function
+        @name clearEntry
+    */
+    clearEntry() {
+        this._operation.pop();
+    }
+
+    /*
+        Define a exibição para mostrar "Erro".
+
+        @function
+        @name setError
+    */
+    setError() {
+        this.displayCalc = "Error";
+    }
+
+    /*
+    Adiciona valor ao array de operação na memória e registra-o no console.
+    
+     @function
+     @name addOperation
+     @param {number} value - Valor a ser adicionado ao array de operação na memória.
+    */
+    addOperation(value) {
+        this._operation.push(value);
+        console.log(this._operation);
+    }
+
+    /*
+        Executa ação do botão com base em seu valor. 
+        Se o valor for 'c', chama o método clearAll. 
+        Se o valor for 'ce', chama o método clearEntry. 
+        Se o valor for um número de 0-9, chama addOperation com parseInt(value) como argumento. 
+        Para todos os outros casos, chama o método setError.
+
+        @function
+        @name execBtn
+        @param {string} value - Valor do botão clicado ou arrastado pelo usuário.
+    */
+    execBtn(value) {
+        switch (value) {
+            case 'c':
+                this.clearAll();
+                break;
+            case 'ce':
+                this.clearEntry();
+                break;
+            case 'sol':
+                /* /*/
+                break;
+            case 'times':
+                /* **/
+                break;
+            case 'minus':
+                break;
+            case 'plus':
+                break;
+            case 'period':
+                break;
+            case 'equals':
+                /* = */
+                break;
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+                this.addOperation(parseInt(value));
+                break;
+            default:
+                this.setError();
+                break;
+        }
+    }
+
+    /*
+        Inicializa os ouvintes de eventos de clique e arrasto para todos os botões com o atributo 'data-btn'.
         Os botões são obtidos usando um seletor de consulta e armazenados como uma propriedade da classe para fácil acesso.
-        Os ouvintes de eventos são adicionados usando o método forEach do array de botões e o método addEventListenerAll desta classe,
-        e registram o conjunto de dados do botão no console quando clicado ou arrastado.
-  
+        Os ouvintes de eventos são adicionados usando o método forEach do array de botões e
+        o método addEventListenerAll desta classe. Quando clicado ou arrastado,
+        chama execBtn com dataset.btn como argumento.
+    
         @function
         @name initButtonsEvents
-  */
+   */
     initButtonsEvents() {
         const buttons = this._buttons;
         buttons.forEach((btn) => {
             this.addEventListenerAll(btn, 'click drag', () => {
-                console.log(btn.dataset.btn);
+                this.execBtn(btn.dataset.btn);
             });
         });
     }
 
- 
+
 
     get displayTime() {
-        return this._timeEl.innerHTML = time
+        return this._timeEl.innerHTML = time;
     }
 
     set displayTime(time) {
-        this._timeEl.innerHTML = time
+        this._timeEl.innerHTML = time;
     }
 
     get displayDate() {
-        return this._dateEl.innerHTML
+        return this._dateEl.innerHTML;
     }
 
     set displayDate(date) {
-        return this._dateEl.innerHTML = date
+        return this._dateEl.innerHTML = date;
     }
 
     get displayCalc() {
-        return this._displayCalcEl.innerHTML
+        return this._displayCalcEl.innerHTML;
     }
 
     set displayCalc(value) {
-        this._displayCalcEl.innerHTML = value
+        this._displayCalcEl.innerHTML = value;
     }
 
     get currentDate() {
-        return new Date()
+        return new Date();
     }
 
     set currentDate(date) {
-        this._currentDate = date
+        this._currentDate = date;
     }
 }
-
