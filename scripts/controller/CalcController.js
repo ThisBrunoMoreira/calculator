@@ -91,24 +91,84 @@ class CalcController {
     }
 
     /*
-    Adiciona valor ao array de operação na memória e registra-o no console.
-    
-     @function
-     @name addOperation
-     @param {number} value - Valor a ser adicionado ao array de operação na memória.
+        Retorna o último valor adicionado ao array de operação.
+        
+        @function
+        @name getLastOperation
+        @returns {number|string} - O último valor adicionado ao array de operação.
     */
-    addOperation(value) {
+    getLastOperation() {
+        return this._operation.slice(-1)[0];
+    }
+
+
+    /*
+      Verifica se o valor é um operador matemático.
+      
+        @function
+        @name isOperator
+        @param {string} value - O valor a ser verificado.
+        @returns {boolean} - Retorna true se o valor for um operador matemático e false caso contrário.
+    */
+    isOperator(value) {
+        return ['+', '-', '*', '%', '/'].includes(value);
+    }
+    /*
+    Define o valor do último item da operação com o valor especificado.
+    
+  
+         @function
+        @name setLastOperation
+        @param {number} value - Valor a ser atribuído ao último item da operação.
+    */
+
+    setLastOperation(value) {
+        this._operation.pop();
         this._operation.push(value);
-        console.log(this._operation);
     }
 
     /*
-        Executa ação do botão com base em seu valor. 
-        Se o valor for 'c', chama o método clearAll. 
-        Se o valor for 'ce', chama o método clearEntry. 
-        Se o valor for um número de 0-9, chama addOperation com parseInt(value) como argumento. 
-        Para todos os outros casos, chama o método setError.
+        Adiciona valor à operação atual ou atualiza o último operador.
+        Se a última operação não for um número, trate como uma string.
+        Se o valor for um operador, troque o último operador pelo novo valor.
+        Se o valor não for um operador, adicione-o à operação como uma nova string.
+        Se a última operação for um número, adicione o valor atual a ele.
 
+        @function
+        @name addOperation
+        @param {number|string} value - Valor a ser adicionado à operação atual.
+    */
+    addOperation(value) {
+        const lastOperation = this.getLastOperation();
+
+        console.log('lastOperation', isNaN(lastOperation))
+
+        if (isNaN(lastOperation)) {
+            if (this.isOperator(value)) {
+                this.setLastOperation(value);
+            } else if (isNaN(value)) {
+                // Se o valor não for um número ou um operador, ignore.
+            } else {
+                this._operation.push(value.toString());
+                console.log(value);
+            }
+        } else {
+            const newValue = `${lastOperation}${value}`;
+            this.setLastOperation(+newValue);
+        }
+
+        console.log(this._operation);
+    }
+
+
+    /*
+        Executa a ação correspondente ao valor do botão clicado ou arrastado pelo usuário.
+        Se o valor for 'c', chama o método clearAll.
+        Se o valor for 'ce', chama o método clearEntry.
+        Se o valor for um número de 0 a 9, chama addOperation com parseInt(value) como argumento.
+        Se o valor for um dos operadores (+, -, *, /, %), chama addOperation com o operador como argumento.
+        Se o valor for um ponto '.', chama addOperation com o ponto como argumento.
+        Para todos os outros casos, chama o método setError.
         @function
         @name execBtn
         @param {string} value - Valor do botão clicado ou arrastado pelo usuário.
@@ -121,20 +181,26 @@ class CalcController {
             case 'ce':
                 this.clearEntry();
                 break;
+            case 'percnt':
+                this.addOperation('%');
+                break
             case 'sol':
-                /* /*/
+                this.addOperation('/');
                 break;
             case 'times':
-                /* **/
+                this.addOperation('*');
                 break;
             case 'minus':
+                this.addOperation('-');
                 break;
             case 'plus':
+                this.addOperation('+');
                 break;
             case 'period':
+                this.addOperation('.');
                 break;
             case 'equals':
-                /* = */
+
                 break;
             case '0':
             case '1':
