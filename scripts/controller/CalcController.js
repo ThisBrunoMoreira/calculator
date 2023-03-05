@@ -120,25 +120,40 @@ class CalcController {
 
 
 
-    /*
-        Calcula o resultado da operação atual e atualiza o array de operações com o resultado e o último valor.
+ /*
+    Calcula o resultado da operação atual e atualiza o array de operações com o resultado e o último valor.
      
-        @function
-        @name calc
-        @returns {void}
-    */
-    calc() {
-        const last = this._operation.pop();
-        let result;
-        if (last == '%') {
-            result = eval(this._operation.join("")) / 100;
-        } else {
-            const expression = this._operation.join("");
-            result = eval(expression);
-        }
-        this._operation = [result, last];
-        this.setLastNumberToDisplay();
+    @function
+    @name calc
+    @returns {void}
+*/
+calc() {
+
+    let last = '';
+    let result;
+
+    // Remove o último valor do array de operações, caso haja mais de três elementos.
+    if (this._operation.length > 3) {
+        last = this._operation.pop();
     }
+
+    // Calcula o resultado da expressão contida no array de operações.
+    if (last === '%') {
+        result = eval(this._operation.join('')) / 100;
+    } else {
+        const expression = this._operation.join('');
+        result = eval(expression);
+    }
+    
+    // Adiciona o último valor de volta ao array de operações.
+    if (last) {
+        this._operation.push(last);
+    }
+
+    // Atualiza o array de operações com o resultado e limpa a tela da calculadora.
+    this._operation = [result];
+    this.setLastNumberToDisplay();
+}
 
 
     /*
@@ -240,10 +255,11 @@ class CalcController {
         Se o valor for um dos operadores (+, -, *, /, %), chama addOperation com o operador como argumento.
         Se o valor for um ponto '.', chama addOperation com o ponto como argumento.
         Para todos os outros casos, chama o método setError.
+    
         @function
         @name execBtn
         @param {string} value - Valor do botão clicado ou arrastado pelo usuário.
-    */
+   */
     execBtn(value) {
         switch (value) {
             case 'c':
@@ -271,7 +287,7 @@ class CalcController {
                 this.addOperation('.');
                 break;
             case 'equals':
-
+                this.calc()
                 break;
             case '0':
             case '1':
