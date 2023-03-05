@@ -1,10 +1,11 @@
 class CalcController {
     constructor() {
         this._locale = 'pt-BR'
-
+        
         this._dateEl = document.querySelector('[data-day]')
         this._timeEl = document.querySelector('[data-hour]')
         this._displayCalcEl = document.querySelector('[data-display]')
+        this._buttons = document.querySelectorAll('[data-btn]')
 
         this._currentDate;
         this.initialize();
@@ -37,9 +38,8 @@ class CalcController {
     }
 
     initButtonsEvents() {
-       let buttons = document.querySelectorAll('[data-btn]')
 
-       buttons.forEach((btn, index) => {
+       this._buttons.forEach((btn, index) => {
             btn.addEventListener('click', e=> {
                 console.log(btn.dataset.btn)
             })
