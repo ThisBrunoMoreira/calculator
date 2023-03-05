@@ -117,17 +117,18 @@ class CalcController {
 
 
     /*
-   
         Calcula o resultado da operação atual e atualiza o array de operações com o resultado e o último valor.
-        @name    calc
+        @function
+        @name calc
         @returns {void}
-   
-    */
+   */
     calc() {
         const last = this._operation.pop();
         const result = eval(this._operation.join(""));
         this._operation = [result, last];
+        this.setLastNumberToDisplay();
     }
+
     /*
      
         Adiciona uma nova operação ao array de operações. Se o tamanho do array for maior que 3, chama a função calc() para calcular o resultado.
@@ -159,38 +160,50 @@ class CalcController {
     }
 
     /*
-        Adiciona valor à operação atual ou atualiza o último operador.
-        Se a última operação não for um número, trate como uma string.
-        Se o valor for um operador, troque o último operador pelo novo valor.
-        Se o valor não for um operador, adicione-o à operação como uma nova string.
-        Se a última operação for um número, adicione o valor atual a ele.
-    
+        Define o último número digitado ou calculado para ser exibido na tela.
+        Percorre a lista de operações da calculadora de trás para frente até encontrar o último número.
+        O número encontrado é atribuído à variável lastNumber e, em seguida, é exibido na tela da calculadora.
+
         @function
-        @name addOperation
-        @param {number|string} value - Valor a ser adicionado à operação atual.
+        @name setLastNumberToDisplay
         @returns {void}
     */
 
+    setLastNumberToDisplay() {
+        let lastNumber = this._operation.slice().reverse().find(number => !this.isOperator(number));
+
+        this.displayCalc = lastNumber;
+    }
+
+
+
+    /*
+    Adiciona um valor à operação atual ou atualiza o último operador.
+    Se a última operação não for um número, trata como uma string.
+    Se o valor for um operador, troca o último operador pelo novo valor.
+    Se o valor não for um operador, adiciona-o à operação como uma nova string.
+    Se a última operação for um número, adiciona o valor atual a ele.
+   
+    @function
+    @name addOperation
+    @param {number|string} value - O valor a ser adicionado à operação atual.
+    @returns {void}
+   */
     addOperation(value) {
         const lastOperation = this.getLastOperation();
-
-
 
         if (isNaN(lastOperation)) {
             if (this.isOperator(value)) {
                 this.setLastOperation(value);
             } else if (!isNaN(value)) {
-
                 this.pushOperation(value);
-
+                this.setLastNumberToDisplay();
             }
-
-
         } else {
             if (!this.isOperator(value)) {
                 const newValue = `${lastOperation}${value}`;
                 this.setLastOperation(+newValue);
-                this.setLastNumberToDisplay()
+                this.setLastNumberToDisplay();
             } else {
                 this.pushOperation(value);
             }
