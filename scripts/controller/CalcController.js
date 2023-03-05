@@ -13,7 +13,7 @@ class CalcController {
         this.initButtonsEvents();
     }
 
-    /*
+    /** 
   
       Inicializa a exibição da data e hora atualizável na calculadora e atualiza a cada segundo.
         @function
@@ -28,7 +28,7 @@ class CalcController {
         this.setLastNumberToDisplay()
     }
 
-    /*
+    /** 
       
       Define a data e a hora atual para exibição na calculadora.
      
@@ -44,9 +44,9 @@ class CalcController {
     }
 
 
-    /*
+    /** 
 
-     Adiciona ouvintes de eventos a um elemento para vários eventos.
+        Adiciona ouvintes de eventos a um elemento para vários eventos.
     
         Este método adiciona ouvintes de eventos a um elemento para vários eventos especificados em uma string separada por espaços.
         Os ouvintes de eventos são adicionados usando o método forEach do array de eventos.
@@ -62,19 +62,21 @@ class CalcController {
             element.addEventListener(event, fn);
         });
     }
-    /*
-    Remove todas as operações armazenadas na memória da calculadora e atualiza a exibição do visor para 0.
- 
-    @function
-    @name clearAll
-    @returns {void}
+    /** 
+        Remove todas as operações armazenadas na memória da calculadora e atualiza a exibição do visor para 0.
+
+        @function
+        @name clearAll
+        @returns {void}
     */
     clearAll() {
         this._operation = [];
+        this._lastNumber = '';
+        this._lastOperator = ''
         this.setLastNumberToDisplay();
     }
 
-    /*
+    /** 
         Remove a última entrada da memória.
         
         @function
@@ -85,7 +87,7 @@ class CalcController {
         this.setLastNumberToDisplay();
     }
 
-    /*
+    /** 
         Define a exibição para mostrar "Erro".
     
         @function
@@ -95,7 +97,38 @@ class CalcController {
         this.displayCalc = "Error";
     }
 
-    /*
+    /**
+     Adiciona um ponto decimal ao último número na operação.
+    
+     Se o último item na operação for um operador ou não houver item na operação,
+     adiciona um "0." na operação. Caso contrário, adiciona um ponto decimal ao último número.
+    
+     @function
+     @name addDot
+     @returns {void}
+   */
+     addDot() {
+        const lastOperation = this.getLastOperation();
+
+        if (typeof lastOperation === 'string' && lastOperation.indexOf('.') > -1) {
+            return
+        }
+
+        if (this.isOperator(lastOperation) || !lastOperation) {
+            this.pushOperation('0.');
+        } else {
+            const lastNumberWithDot = `${lastOperation}.`;
+            this.setLastOperation(lastNumberWithDot);
+        }
+
+        this.setLastNumberToDisplay();
+        console.log(lastOperation);
+    }
+
+
+
+
+    /** 
         Retorna o último valor adicionado ao array de operação.
         
         @function
@@ -107,7 +140,7 @@ class CalcController {
     }
 
 
-    /*
+    /** 
       Verifica se o valor é um operador matemático.
       
         @function
@@ -122,7 +155,7 @@ class CalcController {
 
 
 
-    /*
+    /** 
     
     Calcula o resultado da operação contida no array de operações usando a função eval().
     @returns {number} O resultado da operação.
@@ -132,7 +165,7 @@ class CalcController {
     }
 
 
-    /*
+    /** 
         Calcula o resultado da operação atual e atualiza o array de operações com o resultado e o último valor.
         @function
         @name calc
@@ -175,10 +208,10 @@ class CalcController {
         this.setLastNumberToDisplay();
     }
 
-    /*
+    /** 
      
         Adiciona uma nova operação ao array de operações. Se o tamanho do array for maior que 3, chama a função calc() para calcular o resultado.
-          @function
+        @function
         @name   pushOperation
         @param {*} value - O valor a ser adicionado ao array de operações.
         @returns {void}
@@ -191,11 +224,9 @@ class CalcController {
         }
     }
 
-    /*
-    Define o valor do último item da operação com o valor especificado.
-     
-     
-         @function
+    /** 
+        Define o valor do último item da operação com o valor especificado.
+        @function
         @name setLastOperation
         @param {number} value - Valor a ser atribuído ao último item da operação.
     */
@@ -205,13 +236,12 @@ class CalcController {
         this._operation.push(value);
     }
 
-    /*
-   Retorna o último item adicionado ao array de operações que corresponde ao critério especificado.
-  
-   @function
-   @name getLastItem
-   @param {boolean} [isOperator=true] - Indica se o último item deve ser um operador.
-   @returns {(number|string|undefined)} - O último item que corresponde ao critério especificado ou undefined se não houver nenhum item correspondente.
+    /**  
+        Returns the last item added to the operations array that matches the specified criteria.
+        @function
+        @name getLastItem
+        @param {boolean} [isOperator=true] - Indicates whether the last item should be an operator.
+        @returns {(number|string|undefined)} - The last item that matches the specified criteria, or undefined if there is no matching item.
   */
     getLastItem(isOperator = true) {
         const lastItemIndex = this._operation
@@ -228,7 +258,7 @@ class CalcController {
 
 
 
-    /*
+    /** 
         Define o último número digitado ou calculado para ser exibido na tela.
         Percorre a lista de operações da calculadora de trás para frente até encontrar o último número.
         O número encontrado é atribuído à variável lastNumber e, em seguida, é exibido na tela da calculadora.
@@ -251,18 +281,18 @@ class CalcController {
 
 
 
-    /*
-    Adiciona um valor à operação atual ou atualiza o último operador.
-    Se a última operação não for um número, trata como uma string.
-    Se o valor for um operador, troca o último operador pelo novo valor.
-    Se o valor não for um operador, adiciona-o à operação como uma nova string.
-    Se a última operação for um número, adiciona o valor atual a ele.
-     
-    @function
-    @name addOperation
-    @param {number|string} value - O valor a ser adicionado à operação atual.
-    @returns {void}
-    */
+    /** 
+     Adiciona um valor à operação atual ou atualiza o último operador.
+     Se a última operação não for um número, trata como uma string.
+     Se o valor for um operador, troca o último operador pelo novo valor.
+     Se o valor não for um operador, adiciona-o à operação como uma nova string.
+     Se a última operação for um número, adiciona o valor atual a ele.
+      
+     @function
+     @name addOperation
+     @param {number|string} value - O valor a ser adicionado à operação atual.
+     @returns {void}
+     */
     addOperation(value) {
         const lastOperation = this.getLastOperation();
 
@@ -276,7 +306,7 @@ class CalcController {
         } else {
             if (!this.isOperator(value)) {
                 const newValue = `${lastOperation}${value}`;
-                this.setLastOperation(+newValue);
+                this.setLastOperation(newValue);
                 this.setLastNumberToDisplay();
             } else {
                 this.pushOperation(value);
@@ -287,7 +317,7 @@ class CalcController {
     }
 
 
-    /*
+    /**
         Executa a ação correspondente ao valor do botão clicado ou arrastado pelo usuário.
         Se o valor for 'c', chama o método clearAll.
         Se o valor for 'ce', chama o método clearEntry.
@@ -295,10 +325,11 @@ class CalcController {
         Se o valor for um dos operadores (+, -, *, /, %), chama addOperation com o operador como argumento.
         Se o valor for um ponto '.', chama addOperation com o ponto como argumento.
         Para todos os outros casos, chama o método setError.
-     
+
         @function
         @name execBtn
         @param {string} value - Valor do botão clicado ou arrastado pelo usuário.
+        @returns {void}
     */
     execBtn(value) {
         switch (value) {
@@ -310,7 +341,7 @@ class CalcController {
                 break;
             case 'percnt':
                 this.addOperation('%');
-                break
+                break;
             case 'sol':
                 this.addOperation('/');
                 break;
@@ -324,10 +355,10 @@ class CalcController {
                 this.addOperation('+');
                 break;
             case 'period':
-                this.addOperation('.');
+                this.addDot('.');
                 break;
             case 'equals':
-                this.calc()
+                this.calc();
                 break;
             case '0':
             case '1':
@@ -347,7 +378,8 @@ class CalcController {
         }
     }
 
-    /*
+
+    /** 
         Inicializa os ouvintes de eventos de clique e arrasto para todos os botões com o atributo 'data-btn'.
         Os botões são obtidos usando um seletor de consulta e armazenados como uma propriedade da classe para fácil acesso.
         Os ouvintes de eventos são adicionados usando o método forEach do array de botões e
