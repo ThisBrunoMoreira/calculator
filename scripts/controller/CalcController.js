@@ -11,6 +11,7 @@ class CalcController {
         this._currentDate;
         this.initialize();
         this.initButtonsEvents();
+        this.initKeyboard()
     }
 
     /** 
@@ -27,6 +28,67 @@ class CalcController {
         }, 1000);
         this.setLastNumberToDisplay()
     }
+
+/**
+    Inicia o listener de eventos do teclado, que verifica os eventos de teclas pressionadas
+    e executa a ação correspondente à tecla pressionada. As teclas permitidas são:
+
+    Escape: limpa toda a operação.
+    Backspace: limpa o último número inserido.
+    / - % + *: adiciona a operação correspondente.
+    . , : adiciona um ponto decimal ao último número da operação.
+    Enter = : realiza o cálculo da operação.
+    0-9: adiciona o número correspondente na operação.
+
+    @function
+    @name initKeyboard
+    @returns {void}
+*/
+    initKeyboard() {
+        document.addEventListener('keyup', e => {
+
+
+            switch (e.key) {
+                case 'Escape':
+                    this.clearAll();
+                    break;
+                case 'Backspace':
+                    this.clearEntry();
+                    break;
+                case '*':
+                case '-':
+                case '/':
+                case '%':
+                case '/':
+                case '+':
+                    this.addOperation(e.key);
+                    break;
+                case '.':
+                case ',':
+                    this.addDot();
+                    break;
+                case 'Enter':
+                case '=':
+                    this.calc();
+                    break;
+                case '0':
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                case '8':
+                case '9':
+                    this.addOperation(parseInt(e.key));
+                    break;
+            }
+
+        });
+
+    }
+
 
     /** 
       
@@ -107,7 +169,7 @@ class CalcController {
      @name addDot
      @returns {void}
    */
-     addDot() {
+    addDot() {
         const lastOperation = this.getLastOperation();
 
         if (typeof lastOperation === 'string' && lastOperation.indexOf('.') > -1) {
