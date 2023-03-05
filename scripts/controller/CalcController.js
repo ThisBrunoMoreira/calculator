@@ -113,10 +113,41 @@ class CalcController {
     isOperator(value) {
         return ['+', '-', '*', '%', '/'].includes(value);
     }
+
+
+
+    /*
+   
+        Calcula o resultado da operação atual e atualiza o array de operações com o resultado e o último valor.
+        @name    calc
+        @returns {void}
+   
+    */
+    calc() {
+        const last = this._operation.pop();
+        const result = eval(this._operation.join(""));
+        this._operation = [result, last];
+    }
+    /*
+     
+        Adiciona uma nova operação ao array de operações. Se o tamanho do array for maior que 3, chama a função calc() para calcular o resultado.
+          @function
+        @name   pushOperation
+        @param {*} value - O valor a ser adicionado ao array de operações.
+        @returns {void}
+    */
+    pushOperation(value) {
+        this._operation.push(value);
+        if (this._operation.length > 3) {
+            this.calc();
+            console.log('pushOperation', this._operation);
+        }
+    }
+
     /*
     Define o valor do último item da operação com o valor especificado.
-    
-  
+     
+     
          @function
         @name setLastOperation
         @param {number} value - Valor a ser atribuído ao último item da operação.
@@ -133,28 +164,36 @@ class CalcController {
         Se o valor for um operador, troque o último operador pelo novo valor.
         Se o valor não for um operador, adicione-o à operação como uma nova string.
         Se a última operação for um número, adicione o valor atual a ele.
-
+    
         @function
         @name addOperation
         @param {number|string} value - Valor a ser adicionado à operação atual.
+        @returns {void}
     */
+
     addOperation(value) {
         const lastOperation = this.getLastOperation();
 
-        console.log('lastOperation', isNaN(lastOperation))
+
 
         if (isNaN(lastOperation)) {
             if (this.isOperator(value)) {
                 this.setLastOperation(value);
-            } else if (isNaN(value)) {
-                // Se o valor não for um número ou um operador, ignore.
-            } else {
-                this._operation.push(value.toString());
-                console.log(value);
+            } else if (!isNaN(value)) {
+
+                this.pushOperation(value);
+
             }
+
+
         } else {
-            const newValue = `${lastOperation}${value}`;
-            this.setLastOperation(+newValue);
+            if (!this.isOperator(value)) {
+                const newValue = `${lastOperation}${value}`;
+                this.setLastOperation(+newValue);
+                this.setLastNumberToDisplay()
+            } else {
+                this.pushOperation(value);
+            }
         }
 
         console.log(this._operation);
@@ -226,10 +265,10 @@ class CalcController {
         Os ouvintes de eventos são adicionados usando o método forEach do array de botões e
         o método addEventListenerAll desta classe. Quando clicado ou arrastado,
         chama execBtn com dataset.btn como argumento.
-    
+     
         @function
         @name initButtonsEvents
-   */
+    */
     initButtonsEvents() {
         const buttons = this._buttons;
         buttons.forEach((btn) => {
