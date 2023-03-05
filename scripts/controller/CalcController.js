@@ -1,8 +1,10 @@
 class CalcController {
+
     constructor() {
         this._locale = 'pt-BR';
         this._lastOperator = ''
         this._lastNumber = ''
+        this._lastOperator = null;
         this._dateEl = document.querySelector('[data-day]');
         this._timeEl = document.querySelector('[data-hour]');
         this._displayCalcEl = document.querySelector('[data-display]');
@@ -12,6 +14,7 @@ class CalcController {
         this.initialize();
         this.initButtonsEvents();
         this.initKeyboard()
+
     }
 
     /** 
@@ -29,21 +32,21 @@ class CalcController {
         this.setLastNumberToDisplay()
     }
 
-/**
-    Inicia o listener de eventos do teclado, que verifica os eventos de teclas pressionadas
-    e executa a ação correspondente à tecla pressionada. As teclas permitidas são:
-
-    Escape: limpa toda a operação.
-    Backspace: limpa o último número inserido.
-    / - % + *: adiciona a operação correspondente.
-    . , : adiciona um ponto decimal ao último número da operação.
-    Enter = : realiza o cálculo da operação.
-    0-9: adiciona o número correspondente na operação.
-
-    @function
-    @name initKeyboard
-    @returns {void}
-*/
+    /**
+        Inicia o listener de eventos do teclado, que verifica os eventos de teclas pressionadas
+        e executa a ação correspondente à tecla pressionada. As teclas permitidas são:
+    
+        Escape: limpa toda a operação.
+        Backspace: limpa o último número inserido.
+        / - % + *: adiciona a operação correspondente.
+        . , : adiciona um ponto decimal ao último número da operação.
+        Enter = : realiza o cálculo da operação.
+        0-9: adiciona o número correspondente na operação.
+    
+        @function
+        @name initKeyboard
+        @returns {void}
+    */
     initKeyboard() {
         document.addEventListener('keyup', e => {
 
@@ -187,9 +190,6 @@ class CalcController {
         console.log(lastOperation);
     }
 
-
-
-
     /** 
         Retorna o último valor adicionado ao array de operação.
         
@@ -242,7 +242,7 @@ class CalcController {
             let firstItem = this._operation[0];
             this._operation = [firstItem, this._lastOperator, this._lastNumber];
         }
-
+        
         // Se a operação atual tiver mais de 3 itens, remove o último item e calcula o resultado.
         if (this._operation.length > 3) {
             last = this._operation.pop();
@@ -483,6 +483,10 @@ class CalcController {
     }
 
     set displayCalc(value) {
+        if (value.toString().length > 22) {
+            this.setError()
+            return false
+        }
         this._displayCalcEl.innerHTML = value;
     }
 
