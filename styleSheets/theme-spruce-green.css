@@ -1,0 +1,21 @@
+:root {
+
+
+
+    --math-operators-gradient: linear-gradient(180deg, rgba(28, 102, 166, 0.686) 0.01%,
+
+            rgba(26, 63, 156, 0.589) 100%),
+
+        #1C66A6;
+
+    --gradient-egual-btn: linear-gradient(180deg, rgba(32, 121, 143, 0.506) 0%,
+
+            rgb(28, 166, 156) 100%),
+
+        #1CA69C;
+
+    --color-button-ac: #1A9C6E;
+
+    --bg-gradient: linear-gradient(180deg, #20798f 0%, #1c66a6 100%);
+
+}

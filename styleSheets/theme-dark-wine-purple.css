@@ -1,0 +1,15 @@
+:root {
+
+    --math-operators-gradient: linear-gradient(180deg, rgba(156, 26, 41, 0.603) 0.01%,
+
+            rgba(166, 28, 113, 0.548) 100%),
+
+        #4D1A9C;
+
+
+    --gradient-egual-btn: linear-gradient(180deg, rgba(120, 28, 166, 0.651) 0%, rgba(135, 31, 142, 0.568) 100%), #4d7e66a4;
+
+    --color-button-ac: #871F8E;
+
+    --bg-gradient: linear-gradient(180deg, #4D1A9C 0%, #871F8E 100%)
+}
