@@ -217,13 +217,20 @@ class CalcController {
 
 
 
-    /** 
-    
-    Calcula o resultado da operação contida no array de operações usando a função eval().
-    @returns {number} O resultado da operação.
-    */
+    /**
+         
+        Obtém o resultado da operação atual na calculadora.
+        @function
+        @returns {number} O resultado da operação.
+  */
     getResult() {
-        return eval(this._operation.join(""));
+        try {
+            // Converte a operação em uma string e a avalia com a função eval().
+            return eval(this._operation.join(""));
+        } catch (e) {
+            // Em caso de erro, define a calculadora como erro.
+            this.setError();
+        }
     }
 
 
@@ -242,7 +249,7 @@ class CalcController {
             let firstItem = this._operation[0];
             this._operation = [firstItem, this._lastOperator, this._lastNumber];
         }
-        
+
         // Se a operação atual tiver mais de 3 itens, remove o último item e calcula o resultado.
         if (this._operation.length > 3) {
             last = this._operation.pop();
@@ -298,12 +305,12 @@ class CalcController {
         this._operation.push(value);
     }
 
-    /**  
-        Returns the last item added to the operations array that matches the specified criteria.
-        @function
-        @name getLastItem
-        @param {boolean} [isOperator=true] - Indicates whether the last item should be an operator.
-        @returns {(number|string|undefined)} - The last item that matches the specified criteria, or undefined if there is no matching item.
+    /**
+       Retorna o último item adicionado à matriz de operações que corresponde aos critérios especificados.
+       @function
+       @name getLastItem
+       @param {boolean} [isOperator = true] - Indica se o último item deve ser um operador.
+       @returns {(number | string | undefined)} - O último item que corresponde aos critérios especificados, ou undefined se não houver item correspondente.
   */
     getLastItem(isOperator = true) {
         const lastItemIndex = this._operation
@@ -320,27 +327,22 @@ class CalcController {
 
 
 
-    /** 
-        Define o último número digitado ou calculado para ser exibido na tela.
-        Percorre a lista de operações da calculadora de trás para frente até encontrar o último número.
-        O número encontrado é atribuído à variável lastNumber e, em seguida, é exibido na tela da calculadora.
-    
+    /**
+        Define o último número a ser exibido na calculadora.
         @function
-        @name setLastNumberToDisplay
         @returns {void}
     */
     setLastNumberToDisplay() {
-        let lastNumber = this.getLastItem(false)
-
+        // Obtém o último item digitado pelo usuário.
+        let lastNumber = this.getLastItem(false);
 
         if (!lastNumber) {
             lastNumber = 0;
         }
 
+        // Define o valor do último número na calculadora.
         this.displayCalc = lastNumber;
     }
-
-
 
 
     /** 
