@@ -6,7 +6,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    
+    <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    
     <link rel="stylesheet" href="styleSheets/main.css">
+    <link rel="stylesheet" href="styleSheets/style-switcher.css">
+    <link rel="stylesheet" href="styleSheets/theme-dark-wine-purple.css" class="alternate-theme-style"
+        data-theme-color="dark-wine-purple" disabled>
+    <link rel="stylesheet" href="styleSheets/theme-spruce-green.css" class="alternate-theme-style"
+        data-theme-color="spruce-green" disabled>
+    <link rel="stylesheet" href="styleSheets/theme-ocean-blue.css" class="alternate-theme-style"
+        data-theme-color="ocean-blue" disabled>
+    <link rel="stylesheet" href="styleSheets/theme-magenta.css" class="alternate-theme-style"
+        data-theme-color="magenta">
 </head>
 
 <body>
@@ -54,9 +67,24 @@
             </button>
         </section>
     </main>
-
+    <section class="style__switcher" data-switcher="default">
+        <section class="style__switcher--toggler">
+            <span class="material-symbols-outlined" data-toggler="closed">
+                settings
+            </span>
+            <h3 class="style__switcher--tittle">Theme Color Selector</h3>
+            <section class="colors">
+                <span class="color" data-color="dark-wine-purple"></span>
+                <span class="color" data-color="spruce-green"></span>
+                <span class="color" data-color="ocean-blue"></span>
+                <span class="color" data-color="magenta"></span>
+            </section>
+        </section>
+    </section>
+    
     <script src="scripts/controller/CalcController.js"></script>
     <script src="scripts/calculator.js"></script>
+    <script src="scripts/ThemeSwitcher.js"></script>
 
 </body>
 
