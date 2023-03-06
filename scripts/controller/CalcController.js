@@ -187,7 +187,7 @@ class CalcController {
         }
 
         this.setLastNumberToDisplay();
-        console.log(lastOperation);
+        
     }
 
     /** 
@@ -258,9 +258,6 @@ class CalcController {
             this._lastNumber = this.getLastItem(false);
         }
 
-        console.log('_lastOpertaro', this._lastOperator)
-        console.log('lastNumber', this._lastNumber)
-
         let result = this.getResult();
 
         // Se o último item for um operador de porcentagem, divide o resultado por 100.
@@ -289,7 +286,7 @@ class CalcController {
         this._operation.push(value);
         if (this._operation.length > 3) {
             this.calc();
-            console.log('pushOperation', this._operation);
+          
         }
     }
 
@@ -377,7 +374,6 @@ class CalcController {
             }
         }
 
-        console.log(this._operation);
     }
 
 
